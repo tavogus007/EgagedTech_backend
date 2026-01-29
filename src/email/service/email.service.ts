@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailService {
-    private transporter;
+    private transporter: nodemailer.Transporter;
+    private readonly logger = new Logger(EmailService.name);
 
   constructor(private configService: ConfigService) {
     this.transporter = nodemailer.createTransport({
@@ -14,6 +15,20 @@ export class EmailService {
         pass: this.configService.get('EMAIL_PASS'),
       },
     });
+    this.verifyConnection();
+  }
+
+  private async verifyConnection() {
+    try {
+      await this.transporter.verify();
+      this.logger.log('✅ Conexión SMTP verificada correctamente');
+    } catch (error) {
+      this.logger.error('❌ Error verificando conexión SMTP:', error.message);
+      this.logger.warn('Asegúrate de:');
+      this.logger.warn('1. Tener verificación en 2 pasos ACTIVADA en Google');
+      this.logger.warn('2. Usar una CONTRASEÑA DE APLICACIÓN, no tu contraseña normal');
+      this.logger.warn('3. Permitir aplicaciones menos seguras si no usas verificación en 2 pasos');
+    }
   }
 
   async sendEmail(to: string, nombre: string) {
@@ -21,7 +36,7 @@ export class EmailService {
       from: this.configService.get('EMAIL_USER'),
       to,
       subject: 'Saludos desde NestJS',
-      text: `Hola ${nombre}, este es un correo enviado desde tu app Angular con NestJS`,
+      text: `Hola ${nombre}, prueba de EngagedTech completada con exito1!`,
     });
 
     return info;
