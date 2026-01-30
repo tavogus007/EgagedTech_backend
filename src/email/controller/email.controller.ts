@@ -49,7 +49,6 @@ export class EmailController {
   @Post('test')
   async testEmailService() {
     try {
-      // Enviar email de prueba a un email ficticio
       const result = await this.emailService.sendEmail(
         'test@example.com',
         'Usuario de Prueba'
