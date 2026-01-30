@@ -36,7 +36,7 @@ export class EmailService {
       from: this.configService.get('EMAIL_USER'),
       to,
       subject: 'Saludos desde NestJS',
-      text: `Hola ${nombre}, prueba de EngagedTech completada con exito1!`,
+      text: `Hola ${nombre}, prueba de EngagedTech completada con exito!`,
     });
 
     return info;
